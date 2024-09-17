@@ -44,33 +44,33 @@ bool GameModernWarfare2::LoadOffsets()
     if (CoDAssets::GameInstance != nullptr)
     {
         // Check built-in offsets via game exe mode (SP/MP)
-        for (auto& GameOffsets : (CoDAssets::GameFlags == SupportedGameFlags::SP) ? SinglePlayerOffsets : MultiPlayerOffsets)
-        {
-            // Read required offsets (XANIM, XMODEL, LOADED SOUND)
-            CoDAssets::GameOffsetInfos.emplace_back(CoDAssets::GameInstance->Read<uint32_t>(GameOffsets.DBAssetPools + (4 * 2)));
-            CoDAssets::GameOffsetInfos.emplace_back(CoDAssets::GameInstance->Read<uint32_t>(GameOffsets.DBAssetPools + (4 * 4)));
-            CoDAssets::GameOffsetInfos.emplace_back(CoDAssets::GameInstance->Read<uint32_t>(GameOffsets.DBAssetPools + (4 * 0xD)));
-            // Verify via first xmodel asset
-            auto FirstXModelName = CoDAssets::GameInstance->ReadNullTerminatedString(CoDAssets::GameInstance->Read<uint32_t>(CoDAssets::GameOffsetInfos[1] + 4));
-            // Check
-            if (FirstXModelName == "void")
-            {
-                // Verify string table, otherwise we are all set
-                CoDAssets::GameOffsetInfos.emplace_back(GameOffsets.StringTable);
-                // Read the first string
-                if (!Strings::IsNullOrWhiteSpace(LoadStringEntry(2)))
-                {
-                    // Read and apply sizes
-                    CoDAssets::GamePoolSizes.emplace_back(CoDAssets::GameInstance->Read<uint32_t>(GameOffsets.DBPoolSizes + (4 * 2)));
-                    CoDAssets::GamePoolSizes.emplace_back(CoDAssets::GameInstance->Read<uint32_t>(GameOffsets.DBPoolSizes + (4 * 4)));
-                    CoDAssets::GamePoolSizes.emplace_back(CoDAssets::GameInstance->Read<uint32_t>(GameOffsets.DBPoolSizes + (4 * 0xD)));
-                    // Return success
-                    return true;
-                }
-            }
-            // Reset
-            CoDAssets::GameOffsetInfos.clear();
-        }
+        // for (auto& GameOffsets : (CoDAssets::GameFlags == SupportedGameFlags::SP) ? SinglePlayerOffsets : MultiPlayerOffsets)
+        // {
+        //     // Read required offsets (XANIM, XMODEL, LOADED SOUND)
+        //     CoDAssets::GameOffsetInfos.emplace_back(CoDAssets::GameInstance->Read<uint32_t>(GameOffsets.DBAssetPools + (4 * 2)));
+        //     CoDAssets::GameOffsetInfos.emplace_back(CoDAssets::GameInstance->Read<uint32_t>(GameOffsets.DBAssetPools + (4 * 4)));
+        //     CoDAssets::GameOffsetInfos.emplace_back(CoDAssets::GameInstance->Read<uint32_t>(GameOffsets.DBAssetPools + (4 * 0xD)));
+        //     // Verify via first xmodel asset
+        //     auto FirstXModelName = CoDAssets::GameInstance->ReadNullTerminatedString(CoDAssets::GameInstance->Read<uint32_t>(CoDAssets::GameOffsetInfos[1] + 4));
+        //     // Check
+        //     if (FirstXModelName == "void")
+        //     {
+        //         // Verify string table, otherwise we are all set
+        //         CoDAssets::GameOffsetInfos.emplace_back(GameOffsets.StringTable);
+        //         // Read the first string
+        //         if (!Strings::IsNullOrWhiteSpace(LoadStringEntry(2)))
+        //         {
+        //             // Read and apply sizes
+        //             CoDAssets::GamePoolSizes.emplace_back(CoDAssets::GameInstance->Read<uint32_t>(GameOffsets.DBPoolSizes + (4 * 2)));
+        //             CoDAssets::GamePoolSizes.emplace_back(CoDAssets::GameInstance->Read<uint32_t>(GameOffsets.DBPoolSizes + (4 * 4)));
+        //             CoDAssets::GamePoolSizes.emplace_back(CoDAssets::GameInstance->Read<uint32_t>(GameOffsets.DBPoolSizes + (4 * 0xD)));
+        //             // Return success
+        //             return true;
+        //         }
+        //     }
+        //     // Reset
+        //     CoDAssets::GameOffsetInfos.clear();
+        // }
 
         // Attempt to locate via heuristic searching
         auto DBAssetsScan = CoDAssets::GameInstance->Scan("56 51 FF D2 8B F0 83 C4 04 85 F6");
@@ -139,13 +139,13 @@ bool GameModernWarfare2::LoadAssets()
             auto AnimResult = CoDAssets::GameInstance->Read<MW2XAnim>(AnimationOffset);
 
             // Check whether or not to skip, if the handle is 0, or, if the handle is a pointer within the current pool
-            if ((AnimResult.NamePtr > MinimumPoolOffset && AnimResult.NamePtr < MaximumPoolOffset) || AnimResult.NamePtr == 0)
-            {
-                // Advance
-                AnimationOffset += sizeof(MW2XAnim);
-                // Skip this asset
-                continue;
-            }
+            // if ((AnimResult.NamePtr > MinimumPoolOffset && AnimResult.NamePtr < MaximumPoolOffset) || AnimResult.NamePtr == 0)
+            // {
+            //     // Advance
+            //     AnimationOffset += sizeof(MW2XAnim);
+            //     // Skip this asset
+            //     continue;
+            // }
 
             // Validate and load if need be
             auto AnimName = CoDAssets::GameInstance->ReadNullTerminatedString(AnimResult.NamePtr);
@@ -199,20 +199,20 @@ bool GameModernWarfare2::LoadAssets()
         // Store the placeholder model (Zero Initialization)
         MW2XModel PlaceholderModel = {};
 
-        // Loop and read
-        for (uint32_t i = 0; i < ModelCount; i++)
+        // TODO: Update actual offset
+        for (uint32_t i = 0; i < /* ModelCount */ 1024; i++)
         {
             // Read
             auto ModelResult = CoDAssets::GameInstance->Read<MW2XModel>(ModelOffset);
 
             // Check whether or not to skip, if the handle is 0, or, if the handle is a pointer within the current pool
-            if ((ModelResult.NamePtr > MinimumPoolOffset && ModelResult.NamePtr < MaximumPoolOffset) || ModelResult.NamePtr == 0)
-            {
-                // Advance
-                ModelOffset += sizeof(MW2XModel);
-                // Skip this asset
-                continue;
-            }
+            // if ((ModelResult.NamePtr > MinimumPoolOffset && ModelResult.NamePtr < MaximumPoolOffset) || ModelResult.NamePtr == 0)
+            // {
+            //     // Advance
+            //     ModelOffset += sizeof(MW2XModel);
+            //     // Skip this asset
+            //     continue;
+            // }
 
             // Validate and load if need be
             auto ModelName = FileSystems::GetFileName(CoDAssets::GameInstance->ReadNullTerminatedString(ModelResult.NamePtr));

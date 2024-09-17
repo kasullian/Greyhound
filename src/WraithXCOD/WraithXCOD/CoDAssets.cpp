@@ -437,6 +437,7 @@ const std::vector<CoDGameProcess> CoDAssets::GameProcessInfo =
     { "iw3mp.exe", SupportedGames::ModernWarfare, SupportedGameFlags::MP },
     // Modern Warfare 2
     { "iw4sp.exe", SupportedGames::ModernWarfare2, SupportedGameFlags::SP },
+    { "iw4mp.exe", SupportedGames::ModernWarfare2, SupportedGameFlags::MP },
     { "iw4x.exe", SupportedGames::ModernWarfare2, SupportedGameFlags::MP },
     // Modern Warfare 3
     { "iw5sp.exe", SupportedGames::ModernWarfare3, SupportedGameFlags::SP },
