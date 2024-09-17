@@ -139,13 +139,13 @@ bool GameModernWarfare2::LoadAssets()
             auto AnimResult = CoDAssets::GameInstance->Read<MW2XAnim>(AnimationOffset);
 
             // Check whether or not to skip, if the handle is 0, or, if the handle is a pointer within the current pool
-            // if ((AnimResult.NamePtr > MinimumPoolOffset && AnimResult.NamePtr < MaximumPoolOffset) || AnimResult.NamePtr == 0)
-            // {
-            //     // Advance
-            //     AnimationOffset += sizeof(MW2XAnim);
-            //     // Skip this asset
-            //     continue;
-            // }
+            if ((AnimResult.NamePtr > MinimumPoolOffset && AnimResult.NamePtr < MaximumPoolOffset) || AnimResult.NamePtr == 0)
+            {
+                // Advance
+                AnimationOffset += sizeof(MW2XAnim);
+                // Skip this asset
+                continue;
+            }
 
             // Validate and load if need be
             auto AnimName = CoDAssets::GameInstance->ReadNullTerminatedString(AnimResult.NamePtr);
@@ -204,6 +204,8 @@ bool GameModernWarfare2::LoadAssets()
         {
             // Read
             auto ModelResult = CoDAssets::GameInstance->Read<MW2XModel>(ModelOffset);
+            if (ModelResult.NamePtr == 0)
+                continue;
 
             // Check whether or not to skip, if the handle is 0, or, if the handle is a pointer within the current pool
             // if ((ModelResult.NamePtr > MinimumPoolOffset && ModelResult.NamePtr < MaximumPoolOffset) || ModelResult.NamePtr == 0)
